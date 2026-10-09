@@ -1,7 +1,9 @@
 package service
 
 import (
+	"encoding/json"
 	"errors"
+	"gorm-crud-project/kafka"
 	"gorm-crud-project/models"
 	"gorm-crud-project/repository"
 )
@@ -38,6 +40,14 @@ func (s *UserService) CreateUser(user *models.User) (*models.User, error) {
 	if err != nil {
 		return nil, err
 	}
+	message, err := json.Marshal(createdUser)
+	if err != nil {
+		return nil, err
+	}
 
+	err = kafka.PublishUserCreated(message)
+	if err != nil {
+		return nil, err
+	}
 	return createdUser, nil
 }

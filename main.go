@@ -3,6 +3,7 @@ package main
 import (
 	"gorm-crud-project/config"
 	"gorm-crud-project/handlers"
+	"gorm-crud-project/kafka"
 	"gorm-crud-project/repository"
 	"gorm-crud-project/routes"
 	"gorm-crud-project/service"
@@ -29,6 +30,7 @@ func main() {
 	router := gin.Default()
 
 	routes.RegisterUserRoutes(router, userHandler)
+	go kafka.StartUserCreatedConsumer()
 	router.Run(":8080")
 
 	// var user models.User
